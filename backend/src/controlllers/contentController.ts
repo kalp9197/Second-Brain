@@ -35,17 +35,52 @@ export const addContent = async (req: CustomRequest, res: Response): Promise<voi
 
 export const getContent = async (req: CustomRequest, res: Response): Promise<void> => {
   try {
-    // Ensure the user is authenticated
     if (!req.userId) {
       res.status(401).json({ msg: "Unauthorized: User is not authenticated" });
       return;
     }
 
-    const content = await contentModel.find({ userId: req.userId });
+    const content = await contentModel.find({ userId: req.userId }).populate("userId","username");
 
     res.status(200).json({ content });
   } catch (err) {
     console.error("Error getting content:", err);
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+import mongoose from "mongoose";
+
+export const deleteContent = async (req: CustomRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      res.status(400).json({ msg: "Content ID is required" });
+      return;
+    }
+
+    if (!req.userId) {
+      res.status(401).json({ msg: "Unauthorized: User ID missing" });
+      return;
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ msg: "Invalid Content ID" });
+      return;
+    }
+
+    const content = await contentModel.findOne({ _id: id, userId: req.userId });
+    if (!content) {
+      res.status(404).json({ msg: "Content not found" });
+      return;
+    }
+
+    await contentModel.deleteOne({ _id: id, userId: req.userId });
+
+    res.status(200).json({ msg: "Content deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting content:", err);
     res.status(500).json({ msg: "Internal Server Error" });
   }
 };

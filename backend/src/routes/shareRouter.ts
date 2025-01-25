@@ -1,7 +1,8 @@
 import express from 'express'
+import { getSharedContent, shareContent } from '../controlllers/shareController.js'
 const router = express.Router()
 
-router.route('/share').post()
-router.route('/:shareLink').get()
+router.route('/Shared').post(shareContent)
+router.route('/:SharedLink').get(getSharedContent)
 
 export default router

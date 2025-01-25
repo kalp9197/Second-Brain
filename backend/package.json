@@ -8,7 +8,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.3",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "uuid": "^11.0.5"
   },
   "name": "backend",
   "version": "1.0.0",
