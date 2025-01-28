@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -7,18 +7,14 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [title, setTitle] = useState("");
-  const [link, setLink] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const title = formData.get("title") as string;
+    const link = formData.get("link") as string;
+
     if (title && link) {
       onSubmit(title, link);
-      setTitle("");
-      setLink("");
-      onClose();
-    } else {
-      alert("Title and link are required!");
     }
   };
 
@@ -26,34 +22,38 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div className="p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-xl font-semibold mb-4">Add Content</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleFormSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2" htmlFor="title">
+            <label
+              htmlFor="title"
+              className="block text-gray-700 font-medium mb-2"
+            >
               Title
             </label>
             <input
               type="text"
+              name="title"
               id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter content title"
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter title"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2" htmlFor="link">
+            <label
+              htmlFor="link"
+              className="block text-gray-700 font-medium mb-2"
+            >
               Link
             </label>
             <input
               type="text"
+              name="link"
               id="link"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
+              placeholder="Enter content link"
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter link"
               required
             />
           </div>

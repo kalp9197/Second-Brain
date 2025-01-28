@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "../components/Button";
 import Card from "../components/Card";
+import Modal from "../components/Modal";
 
 const Home: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,11 +30,6 @@ const Home: React.FC = () => {
     },
   ];
 
-  const handleAddContent = () => {
-    alert("Content added!");
-    setIsModalOpen(false); // Close the modal after submitting
-  };
-
   const onAddContent = () => {
     setIsModalOpen(true);
   };
@@ -42,73 +38,25 @@ const Home: React.FC = () => {
     alert("Share brain");
   };
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAddContent = (title: string, link: string) => {
+    alert(`Added Content:\nTitle: ${title}\nLink: ${link}`);
+    setIsModalOpen(false);
+  };
+
   return (
     <>
-      {/* Buttons */}
       <Button onAddContent={onAddContent} onShareBrain={onShareBrain} />
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Add Content</h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleAddContent();
-              }}
-            >
-              <div className="mb-4">
-                <label
-                  htmlFor="title"
-                  className="block text-gray-700 font-medium mb-2"
-                >
-                  Title
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  placeholder="Enter content title"
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="link"
-                  className="block text-gray-700 font-medium mb-2"
-                >
-                  Link
-                </label>
-                <input
-                  type="text"
-                  id="link"
-                  placeholder="Enter content link"
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                  required
-                />
-              </div>
-              <div className="flex justify-end gap-4">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
-                  Add
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSubmit={handleAddContent}
+      />
 
-      {/* Card Grid */}
       <div className="p-10 grid gap-6 pt-10 mx-auto sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
         {exampleData.map((item, index) => (
           <Card
@@ -123,5 +71,4 @@ const Home: React.FC = () => {
     </>
   );
 };
-
 export default Home;

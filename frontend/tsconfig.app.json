@@ -23,5 +23,13 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "../frontend/src/pages/Header.jsx"]
+  ,
+  "baseUrl": ".",
+  "paths": {
+    "@/*": [
+      "./src/*"
+    ]
+  }
+
 }
