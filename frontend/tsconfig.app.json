@@ -6,7 +6,6 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "noImplicitAny": false,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -23,9 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "../frontend/src/pages/Header.jsx"]
-  ,
-  "baseUrl": ".",
+  "include": ["src"]
+  ,    "baseUrl": ".",
   "paths": {
     "@/*": [
       "./src/*"

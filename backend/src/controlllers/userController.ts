@@ -74,3 +74,15 @@ export const signin = async (
       .json({ msg: "Internal server error", error: (error as Error).message });
   }
 };
+
+export const logout = async (req: CustomRequest, res: Response): Promise<void> => {
+  try {
+    res.clearCookie("token", { path: "/" });
+    res.status(200).json({ msg: "User logged out successfully", success: true });
+  } catch (error: unknown) {
+    console.error("Error during logout:", error);
+    res
+     .status(500)
+     .json({ msg: "Internal server error", error: (error as Error).message });
+  }
+}

@@ -1,65 +1,49 @@
-// import { useState } from "react";
-// import { Link } from "react-router-dom";
-// import useLogin from "../hooks/signin";
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 
-// const Signin = () => {
-// 	const [userName, setUserName] = useState(""); // Using `userName` instead of `username`
-// 	const [password, setPassword] = useState("");
+function Signin() { 
+  const navigate = useNavigate();
+  const [user, setUser] = useState({ username: "", password: "" });
 
-// 	const { loading, login } = useLogin();
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
-// 	const handleSubmit = async (e) => {
-// 		e.preventDefault();
-// 		await login(userName, password); // Passing `userName` to the login function
-// 	};
+  const signinHandler = async () => {
+    try {
+      const res = await axios.post(
+        'http://localhost:8000/api/v1/user/signin', 
+        user,
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        navigate("/"); 
+      }
+    } catch (error) {
+      //@ts-ignore
+      console.error("Signin failed:", error.response?.data?.msg || 'An error occurred');
+    }
+  };
 
-// 	return (
-// 		<div className="flex flex-col items-center justify-center min-w-96 mx-auto">
-// 			<div className="w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0">
-// 				<h1 className="text-3xl font-semibold text-center text-gray-300">
-// 					Login
-// 					<span className="text-blue-500"> ChatApp</span>
-// 				</h1>
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="p-6 rounded-lg shadow-md w-96">
+        <h2 className="text-2xl font-semibold text-center mb-4">Sign In</h2>
+        <Input type="text" name="username" onChange={changeHandler} value={user.username} placeholder="Username" />
+        <Input type="password" name="password" onChange={changeHandler} value={user.password} placeholder="Password" className="mt-3" />
+        <Button onClick={signinHandler} className="w-full mt-4">Signin</Button>
+        <p className="text-sm text-center mt-3">
+          Not signed up? 
+          <Link to="/signup" className="text-blue-500 hover:underline ml-1">
+            Click here
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}
 
-// 				<form onSubmit={handleSubmit}>
-// 					<div>
-// 						<label className="label p-2">
-// 							<span className="text-base label-text">Username</span>
-// 						</label>
-// 						<input
-// 							type="text"
-// 							placeholder="Enter username"
-// 							className="w-full input input-bordered h-10"
-// 							value={userName} // Binding `userName`
-// 							onChange={(e) => setUserName(e.target.value)} // Updating `userName`
-// 						/>
-// 					</div>
-
-// 					<div>
-// 						<label className="label">
-// 							<span className="text-base label-text">Password</span>
-// 						</label>
-// 						<input
-// 							type="password"
-// 							placeholder="Enter Password"
-// 							className="w-full input input-bordered h-10"
-// 							value={password}
-// 							onChange={(e) => setPassword(e.target.value)}
-// 						/>
-// 					</div>
-// 					<Link to="/signup" className="text-sm hover:underline hover:text-blue-600 mt-2 inline-block">
-// 						{"Don't"} have an account?
-// 					</Link>
-
-// 					<div>
-// 						<button className="btn btn-block btn-sm mt-2" disabled={loading}>
-// 							{loading ? <span className="loading loading-spinner"></span> : "Login"}
-// 						</button>
-// 					</div>
-// 				</form>
-// 			</div>
-// 		</div>
-// 	);
-// };
-
-// export default Signin;
+export default Signin;

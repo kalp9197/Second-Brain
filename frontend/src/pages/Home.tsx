@@ -50,7 +50,6 @@ const Home: React.FC = () => {
   return (
     <>
       <Button onAddContent={onAddContent} onShareBrain={onShareBrain} />
-
       <Modal
         isOpen={isModalOpen}
         onClose={handleModalClose}

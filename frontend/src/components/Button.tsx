@@ -8,7 +8,7 @@ interface ButtonProps {
 export const Button: React.FC<ButtonProps> = ({ onAddContent, onShareBrain }) => {
   return (
     <div className="flex justify-between items-center gap-1.5">
-      <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
+      <h1 className="text-4xl font-bold text-blue-800 dark:text-white">
         ALL NOTES
       </h1>
       <div className="flex gap-1.5">
