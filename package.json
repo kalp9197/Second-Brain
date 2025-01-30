@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "install-all": "npm install --prefix frontend && npm install --prefix backend",
-    "start": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
-    "start:frontend": "npm run dev --prefix frontend",
-    "start:backend": "npm run dev --prefix backend"
+    "dev": "npm install --prefix frontend && npm install --prefix backend && concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
   },
   "repository": {
     "type": "git",
