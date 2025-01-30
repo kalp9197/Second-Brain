@@ -3,7 +3,7 @@ import React from "react";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (title: string, link: string) => void;
+  onSubmit: (title: string, description: string, link: string) => void;
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
@@ -11,10 +11,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
     const link = formData.get("link") as string;
 
-    if (title && link) {
-      onSubmit(title, link);
+    if (title && description && link) {
+      onSubmit(title, description, link);
     }
   };
 
@@ -25,11 +26,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
       <div className="p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-xl font-semibold mb-4">Add Content</h2>
         <form onSubmit={handleFormSubmit}>
+          {/* Title Field */}
           <div className="mb-4">
-            <label
-              htmlFor="title"
-              className="block text-gray-700 font-medium mb-2"
-            >
+            <label htmlFor="title" className="block text-gray-700 font-medium mb-2">
               Title
             </label>
             <input
@@ -41,11 +40,25 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
               required
             />
           </div>
+
+          {/* Description Field */}
           <div className="mb-4">
-            <label
-              htmlFor="link"
-              className="block text-gray-700 font-medium mb-2"
-            >
+            <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
+              Description
+            </label>
+            <textarea
+              name="description"
+              id="description"
+              placeholder="Enter content description"
+              rows={3}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              required
+            />
+          </div>
+
+          {/* Link Field */}
+          <div className="mb-4">
+            <label htmlFor="link" className="block text-gray-700 font-medium mb-2">
               Link
             </label>
             <input
@@ -57,6 +70,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
               required
             />
           </div>
+
+          {/* Buttons */}
           <div className="flex justify-end gap-4">
             <button
               type="button"

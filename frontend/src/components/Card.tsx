@@ -1,28 +1,69 @@
 import React from "react";
 
 interface CardProps {
+  id: string;
   title: string;
   description: string;
-  tags: string[];
-  addedOn: string;
+  link: string;
+  onDelete: (id: string) => void;
 }
 
-const Card: React.FC<CardProps> = ({ title, description, tags, addedOn }) => {
+// Function to extract YouTube Video ID
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  try {
+    const urlObj = new URL(url);
+    if (urlObj.hostname.includes("youtube.com")) {
+      const videoId = urlObj.searchParams.get("v");
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+    } else if (urlObj.hostname.includes("youtu.be")) {
+      return `https://www.youtube.com/embed${urlObj.pathname}`;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+};
+
+const Card: React.FC<CardProps> = ({ id, title, description, link, onDelete }) => {
+  const embedUrl = getYouTubeEmbedUrl(link); // Check if the link is a YouTube URL
+
   return (
-    <div className="p-4 bg-white rounded-lg shadow-lg">
+    <div className="p-4 bg-white rounded-lg shadow-lg relative">
       <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
       <p className="text-gray-600 mt-2">{description}</p>
-      <div className="flex flex-wrap mt-4 gap-2">
-        {tags.map((tag, index) => (
-          <span
-            key={index}
-            className="text-xs font-medium bg-blue-100 text-blue-600 px-2 py-1 rounded-full"
-          >
-            #{tag}
-          </span>
-        ))}
-      </div>
-      <p className="text-sm text-gray-400 mt-4">Added on {addedOn}</p>
+
+      {/* Render YouTube Video if it's a YouTube Link */}
+      {embedUrl ? (
+        <iframe
+          width="100%"
+          height="200"
+          src={embedUrl}
+          title="YouTube Video"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+          className="mt-3 rounded-lg"
+        ></iframe>
+      ) : (
+        // Otherwise, show link normally
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 block text-blue-500 hover:underline break-words"
+        >
+          {link}
+        </a>
+      )}
+
+      {/* Delete Button */}
+      <button
+        onClick={() => onDelete(id)}
+        className="absolute top-2 right-2 text-red-500 text-sm hover:text-red-700"
+      >
+        ❌ Delete
+      </button>
     </div>
   );
 };

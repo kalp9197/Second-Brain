@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Header from "./components/Header";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
+import { AuthProvider } from "./context/AuthContext"; 
 
 const appRouter = createBrowserRouter([
   {
@@ -36,7 +37,11 @@ const appRouter = createBrowserRouter([
 ]);
 
 const App = () => {
-  return <RouterProvider router={appRouter} />;
+  return (
+    <AuthProvider> {/* Ensure AuthProvider wraps everything */}
+      <RouterProvider router={appRouter} />
+    </AuthProvider>
+  );
 };
 
 export default App;

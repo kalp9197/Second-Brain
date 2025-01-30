@@ -1,73 +1,107 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Button } from "../components/Button";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
+import { useAuth } from "../context/AuthContext";
+
+interface Content {
+  _id: string;
+  title: string;
+  description: string;
+  link: string;
+}
 
 const Home: React.FC = () => {
+  const { user } = useAuth(); // Get logged-in user
+  const [contentList, setContentList] = useState<Content[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const exampleData = [
-    {
-      title: "Project Ideas",
-      description:
-        "Future Projects:\n- Build a personal knowledge base\n- Create a habit tracker\n- Design a minimalist todo app",
-      tags: ["productivity", "ideas"],
-      addedOn: "10/03/2024",
-    },
-    {
-      title: "How to Build a Second Brain",
-      description:
-        "Learn to organize your ideas effectively and make them easily accessible.",
-      tags: ["productivity", "learning"],
-      addedOn: "09/03/2024",
-    },
-    {
-      title: "Productivity Tip",
-      description:
-        "The best way to learn is to build in public. Share your progress, get feedback, and help others along the way.",
-      tags: ["productivity", "learning"],
-      addedOn: "08/03/2024",
-    },
-  ];
+  // Fetch content from backend
+  useEffect(() => {
+    if (!user) return; // Ensure user is logged in
 
-  const onAddContent = () => {
-    setIsModalOpen(true);
+    const fetchContent = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/user/content", {
+          withCredentials: true,
+        });
+
+        // ✅ Ensure recent content appears first
+        setContentList(res.data.content.reverse());
+      } catch (err) {
+        console.error("Error fetching content:", err);
+      }
+    };
+
+    fetchContent();
+  }, [user]);
+
+  // Add new content
+  const handleAddContent = async (title: string, description: string, link: string) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/v1/user/content",
+        { title, description, link },
+        { withCredentials: true }
+      );
+
+      if (res.status === 201) {
+        const newContent: Content = {
+          _id: res.data.content._id, // Ensure correct structure
+          title,
+          description,
+          link,
+        };
+
+        // ✅ Prepend new content to show it at the top
+        setContentList((prev) => [newContent, ...prev]);
+      }
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Error adding content:", err);
+    }
   };
 
-  const onShareBrain = () => {
-    alert("Share brain");
-  };
+  // Delete content
+  const handleDeleteContent = async (id: string) => {
+    try {
+      await axios.delete("http://localhost:8000/api/v1/user/content", {
+        data: { id },
+        withCredentials: true,
+      });
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleAddContent = (title: string, link: string) => {
-    alert(`Added Content:\nTitle: ${title}\nLink: ${link}`);
-    setIsModalOpen(false);
+      // ✅ Remove deleted content from state
+      setContentList((prev) => prev.filter((item) => item._id !== id));
+    } catch (err) {
+      console.error("Error deleting content:", err);
+    }
   };
 
   return (
     <>
-      <Button onAddContent={onAddContent} onShareBrain={onShareBrain} />
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        onSubmit={handleAddContent}
+      {/* ✅ Fixed Button by passing correct props */}
+      <Button
+        onAddContent={() => setIsModalOpen(true)}
+        onShareBrain={() => alert("Share Brain Feature Coming Soon!")}
       />
 
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleAddContent} />
+
       <div className="p-10 grid gap-6 pt-10 mx-auto sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-        {exampleData.map((item, index) => (
+        {contentList.map((item) => (
           <Card
-            key={index}
+            key={item._id}
+            id={item._id}
             title={item.title}
             description={item.description}
-            tags={item.tags}
-            addedOn={item.addedOn}
+            link={item.link}
+            onDelete={handleDeleteContent}
           />
         ))}
       </div>
     </>
   );
 };
+
 export default Home;

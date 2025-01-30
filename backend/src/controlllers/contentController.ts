@@ -1,38 +1,45 @@
-import { Request, Response } from 'express';
-import contentModel from '../models/contentModel.js';
+import { Request, Response } from "express";
+import mongoose from "mongoose";
+import contentModel from "../models/contentModel.js";
 
 interface CustomRequest extends Request {
-  userId?: string; 
+  userId?: string;
 }
 
+// ✅ Add Content
 export const addContent = async (req: CustomRequest, res: Response): Promise<void> => {
   try {
-    const { title, link } = req.body;
+    const { title, description, link } = req.body;
 
-    if (!title || !link) {
-      res.status(400).json({ msg: 'Title and link are required' });
+    // Validate required fields
+    if (!title || !description || !link) {
+      res.status(400).json({ msg: "Title, description, and link are required" });
       return;
     }
 
+    // Ensure user is authenticated
     if (!req.userId) {
-      res.status(401).json({ msg: 'Unauthorized: User ID missing' });
+      res.status(401).json({ msg: "Unauthorized: User ID missing" });
       return;
     }
 
-    await contentModel.create({
+    // Create and save content
+    const newContent = await contentModel.create({
       title,
+      description,
       link,
       userId: req.userId,
       tags: [],
     });
 
-    res.status(201).json({ msg: 'Content added successfully' });
+    res.status(201).json({ msg: "Content added successfully", content: newContent });
   } catch (err) {
-    console.error('Error adding content:', err);
-    res.status(500).json({ msg: 'Internal Server Error' });
+    console.error("Error adding content:", err);
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 };
 
+// ✅ Get Content for Logged-in User
 export const getContent = async (req: CustomRequest, res: Response): Promise<void> => {
   try {
     if (!req.userId) {
@@ -40,7 +47,8 @@ export const getContent = async (req: CustomRequest, res: Response): Promise<voi
       return;
     }
 
-    const content = await contentModel.find({ userId: req.userId }).populate("userId","username");
+    // Fetch all content created by the user
+    const content = await contentModel.find({ userId: req.userId }).populate("userId", "username");
 
     res.status(200).json({ content });
   } catch (err) {
@@ -49,12 +57,12 @@ export const getContent = async (req: CustomRequest, res: Response): Promise<voi
   }
 };
 
-import mongoose from "mongoose";
-
+// ✅ Delete Content
 export const deleteContent = async (req: CustomRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.body;
 
+    // Validate Content ID
     if (!id) {
       res.status(400).json({ msg: "Content ID is required" });
       return;
@@ -70,12 +78,14 @@ export const deleteContent = async (req: CustomRequest, res: Response): Promise<
       return;
     }
 
+    // Check if content exists
     const content = await contentModel.findOne({ _id: id, userId: req.userId });
     if (!content) {
       res.status(404).json({ msg: "Content not found" });
       return;
     }
 
+    // Delete content
     await contentModel.deleteOne({ _id: id, userId: req.userId });
 
     res.status(200).json({ msg: "Content deleted successfully" });
