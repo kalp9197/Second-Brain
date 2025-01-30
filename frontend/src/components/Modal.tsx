@@ -22,13 +22,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-sm z-50">
       <div className="p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-xl font-semibold mb-4">Add Content</h2>
         <form onSubmit={handleFormSubmit}>
           {/* Title Field */}
           <div className="mb-4">
-            <label htmlFor="title" className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="title" className="block text-white font-medium mb-2">
               Title
             </label>
             <input
@@ -41,9 +41,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
             />
           </div>
 
-          {/* Description Field */}
           <div className="mb-4">
-            <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="description" className="block text-white font-medium mb-2">
               Description
             </label>
             <textarea
@@ -56,9 +55,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
             />
           </div>
 
-          {/* Link Field */}
           <div className="mb-4">
-            <label htmlFor="link" className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="link" className="block text-white font-medium mb-2">
               Link
             </label>
             <input
@@ -70,8 +68,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit }) => {
               required
             />
           </div>
-
-          {/* Buttons */}
+          
           <div className="flex justify-end gap-4">
             <button
               type="button"

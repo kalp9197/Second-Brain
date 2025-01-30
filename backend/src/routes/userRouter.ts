@@ -6,9 +6,7 @@ const router = express.Router();
 router.route('/signup').post(signup)
 router.route('/signin').post(signin)
 router.route('/logout').post(logout)
-//@ts-ignore
 router.route('/content').post(isAuthenticated,addContent)
 router.route('/content').get(isAuthenticated,getContent)
 router.route('/content').delete(isAuthenticated,deleteContent)
-
 export default router;

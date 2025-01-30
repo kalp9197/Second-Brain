@@ -1,23 +1,19 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import axios from "axios";
 
-// Define types for authentication state
 interface AuthContextType {
   user: string | null;
   signin: (username: string, password: string) => Promise<void>;
   signout: () => void;
 }
 
-// Create context with default values
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // Load user from localStorage when app starts
   const [user, setUser] = useState<string | null>(() => {
     return localStorage.getItem("user");
   });
 
-  // Save user to localStorage whenever it changes
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", user);
@@ -37,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.status === 200) {
         setUser(username);
-        localStorage.setItem("user", username); // Store user in localStorage
+        localStorage.setItem("user", username); 
       } else {
         throw new Error("Invalid credentials");
       }
@@ -51,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Signout function
   const signout = () => {
     setUser(null);
-    localStorage.removeItem("user"); // Clear user from localStorage
+    localStorage.removeItem("user");
   };
 
   return <AuthContext.Provider value={{ user, signin, signout }}>{children}</AuthContext.Provider>;

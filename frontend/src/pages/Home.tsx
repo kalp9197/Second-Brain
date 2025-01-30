@@ -13,13 +13,13 @@ interface Content {
 }
 
 const Home: React.FC = () => {
-  const { user } = useAuth(); // Get logged-in user
+  const { user } = useAuth();
   const [contentList, setContentList] = useState<Content[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch content from backend
   useEffect(() => {
-    if (!user) return; // Ensure user is logged in
+    if (!user) return;
 
     const fetchContent = async () => {
       try {
@@ -27,7 +27,6 @@ const Home: React.FC = () => {
           withCredentials: true,
         });
 
-        // ✅ Ensure recent content appears first
         setContentList(res.data.content.reverse());
       } catch (err) {
         console.error("Error fetching content:", err);
@@ -48,13 +47,12 @@ const Home: React.FC = () => {
 
       if (res.status === 201) {
         const newContent: Content = {
-          _id: res.data.content._id, // Ensure correct structure
+          _id: res.data.content._id,
           title,
           description,
           link,
         };
 
-        // ✅ Prepend new content to show it at the top
         setContentList((prev) => [newContent, ...prev]);
       }
       setIsModalOpen(false);
@@ -80,10 +78,8 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {/* ✅ Fixed Button by passing correct props */}
       <Button
         onAddContent={() => setIsModalOpen(true)}
-        onShareBrain={() => alert("Share Brain Feature Coming Soon!")}
       />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleAddContent} />

@@ -4,44 +4,45 @@ import Home from "./pages/Home";
 import Header from "./components/Header";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
-import { AuthProvider } from "./context/AuthContext"; 
+import SharedContent from "./pages/SharedContent";
+import { AuthProvider } from "./context/AuthContext";
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
     element: (
-      <div>
+      <AuthProvider> 
         <Header />
         <Home />
-      </div>
+      </AuthProvider>
     ),
   },
   {
     path: "/signin",
     element: (
-      <div>
+      <AuthProvider>
         <Header />
         <Signin />
-      </div>
+      </AuthProvider>
     ),
   },
   {
     path: "/signup",
     element: (
-      <div>
+      <AuthProvider>
         <Header />
         <Signup />
-      </div>
+      </AuthProvider>
     ),
+  },
+  {
+    path: "/shared/:shareLink",
+    element: <SharedContent />,
   },
 ]);
 
 const App = () => {
-  return (
-    <AuthProvider> {/* Ensure AuthProvider wraps everything */}
-      <RouterProvider router={appRouter} />
-    </AuthProvider>
-  );
+  return <RouterProvider router={appRouter} />;
 };
 
 export default App;

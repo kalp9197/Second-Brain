@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const contentSchema = new mongoose.Schema(
   {
     title: {
@@ -32,7 +31,5 @@ const contentSchema = new mongoose.Schema(
     timestamps: true 
   }
 );
-
 const contentModel = mongoose.model("Content", contentSchema);
-
 export default contentModel;

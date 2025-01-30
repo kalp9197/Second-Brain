@@ -2,11 +2,11 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { useAuth } from "../context/AuthContext"; // Import AuthContext
+import { useAuth } from "../context/AuthContext"; 
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { user, signout } = useAuth(); // Get authentication state & signout function
+  const { user, signout } = useAuth(); 
 
   const logoutHandler = async () => {
     try {
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
       );
 
       if (response.data.success) {
-        signout(); // Clear user from context & localStorage
+        signout(); 
         navigate("/signin"); 
       }
     } catch (error) {
